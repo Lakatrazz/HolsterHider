@@ -1,29 +1,16 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <LangVersion>10.0</LangVersion>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <AssemblyTitle>Holster Hider</AssemblyTitle>
-    <Product>Holster Hider</Product>
-    <Copyright>Copyright ©  2022</Copyright>
-  </PropertyGroup>
+
   <ItemGroup>
-    <None Remove="resources\HolsterHiderModule.dll" />
+    <ProjectReference Include="..\HolsterHider\HolsterHider.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <EmbeddedResource Include="resources\HolsterHiderModule.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>$(BONELAB_DIR)\MelonLoader\Il2CppAssemblies\Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="BoneLib">
-      <HintPath>$(BONELAB_DIR)\Mods\BoneLib.dll</HintPath>
-    </Reference>
     <Reference Include="Il2CppInterop.Common">
       <HintPath>$(BONELAB_DIR)\MelonLoader\net6\Il2CppInterop.Common.dll</HintPath>
     </Reference>
@@ -39,17 +26,22 @@
     <Reference Include="Il2CppSLZ.Marrow">
       <HintPath>$(BONELAB_DIR)\MelonLoader\Il2CppAssemblies\Il2CppSLZ.Marrow.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppSystem.Core">
-      <HintPath>$(BONELAB_DIR)\MelonLoader\Il2CppAssemblies\Il2CppSystem.Core.dll</HintPath>
+    <Reference Include="LabFusion">
+      <HintPath>$(BONELAB_DIR)\Mods\LabFusion.dll</HintPath>
     </Reference>
     <Reference Include="MelonLoader">
       <HintPath>$(BONELAB_DIR)\MelonLoader\net6\MelonLoader.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(BONELAB_DIR)\MelonLoader\Il2CppAssemblies\UnityEngine.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>$(BONELAB_DIR)\MelonLoader\Il2CppAssemblies\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>$(BONELAB_DIR)\MelonLoader\Il2CppAssemblies\UnityEngine.PhysicsModule.dll</HintPath>
-    </Reference>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /y /d &quot;$(ProjectDir)$(OutDir)$(AssemblyName).dll&quot; &quot;$(ProjectDir)..\HolsterHider\resources&quot;" />
+  </Target>
+
 </Project>

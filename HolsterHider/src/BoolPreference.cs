@@ -7,16 +7,16 @@ namespace HolsterHider;
 
 public class BoolPreference
 {
-    public MelonPreferences_Entry<bool> preference;
-    public BoolElement element;
-    public string identifier;
+    public MelonPreferences_Entry<bool> Preference;
+    public BoolElement Element;
+    public string Identifier;
 
     public Action<bool> OnSetValue;
 
     public BoolPreference(MelonPreferences_Category category, string identifier)
     {
-        preference = category.CreateEntry(identifier, true);
-        this.identifier = identifier;
+        Preference = category.CreateEntry(identifier, true);
+        this.Identifier = identifier;
     }
 
     public void OnBoneMenuChange(bool value)
@@ -27,19 +27,19 @@ public class BoolPreference
 
     public void SetValue(bool value)
     {
-        preference.Value = value;
-        preference.Category.SaveToFile(false);
+        Preference.Value = value;
+        Preference.Category.SaveToFile(false);
 
         UpdatePreferences();
     }
 
     public void UpdatePreferences()
     {
-        var value = preference.Value;
+        var value = Preference.Value;
 
-        if (element != null)
+        if (Element != null)
         {
-            element.Value = value;
+            Element.Value = value;
         }
 
         OnSetValue?.Invoke(value);

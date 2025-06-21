@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HolsterHider;
+﻿namespace HolsterHider;
 
 public class BodyConfig
 {
@@ -14,14 +8,14 @@ public class BodyConfig
 
     public bool ScaleHolsters { get; set; } = true;
 
-    public HolsterConfig HeadGroup => _holsterConfigs[0];
-    public HolsterConfig RightShoulderGroup => _holsterConfigs[1];
-    public HolsterConfig LeftShoulderGroup => _holsterConfigs[2];
-    public HolsterConfig RightUnderarmGroup => _holsterConfigs[3];
-    public HolsterConfig LeftUnderarmGroup => _holsterConfigs[4];
-    public HolsterConfig BackGroup => _holsterConfigs[5];
-    public HolsterConfig AmmoPouchGroup => _holsterConfigs[6];
-    public HolsterConfig BodyLogGroup => _holsterConfigs[7];
+    public HolsterConfig HeadGroup => HolsterConfigs[0];
+    public HolsterConfig RightShoulderGroup => HolsterConfigs[1];
+    public HolsterConfig LeftShoulderGroup => HolsterConfigs[2];
+    public HolsterConfig RightUnderarmGroup => HolsterConfigs[3];
+    public HolsterConfig LeftUnderarmGroup => HolsterConfigs[4];
+    public HolsterConfig BackGroup => HolsterConfigs[5];
+    public HolsterConfig AmmoPouchGroup => HolsterConfigs[6];
+    public HolsterConfig BodyLogGroup => HolsterConfigs[7];
 
     public BodyConfig()
     {

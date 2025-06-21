@@ -5,58 +5,70 @@ using MelonLoader;
 
 using UnityEngine;
 
-using Il2CppSLZ.VRMK;
+using HolsterHider.MonoBehaviours;
+
+using System.Reflection;
+using System;
 
 namespace HolsterHider;
 
 public class HolsterHiderMod : MelonMod
 {
-    public const string Version = "1.1.0";
+    public const string Version = "1.2.0";
 
-    public MelonPreferences_Category MelonCategory { get; private set; }
-    public Page MainPage { get; private set; }
+    public static Assembly HolsterHiderAssembly { get; private set; } = null;
+
+    public static MelonPreferences_Category MelonCategory { get; private set; }
+    public static Page MainPage { get; private set; }
+
+    public static readonly BodyPreferences BodyPreferences = new();
 
 
-    private static readonly BodyPreference _bodyPreferences = new();
-    private static readonly BodyReference _bodyReferences = new();
-    private static readonly BodyConfig _bodyConfig = new();
+    public static readonly BodyConfig LocalBodyConfig = new();
+    public static HolsterHiderRig LocalRig { get; private set; } = null;
 
-    private bool _preferencesSetup = false;
+    public static event Action OnHolstersChanged;
+
+    private static bool _preferencesSetup = false;
 
     public override void OnLateInitializeMelon()
     {
+        HolsterHiderAssembly = MelonAssembly.Assembly;
+
         MelonCategory = MelonPreferences.CreateCategory("Holster Hider");
 
-        _bodyPreferences.LoadPreferences(MelonCategory);
-        _bodyPreferences.LoadConfig(_bodyConfig);
+        BodyPreferences.LoadPreferences(MelonCategory);
+        BodyPreferences.LoadConfig(LocalBodyConfig);
 
         SetupBoneMenu();
 
         _preferencesSetup = true;
 
         Hooking.OnLevelLoaded += OnLevelLoaded;
-        Hooking.OnSwitchAvatarPostfix += OnSwitchAvatar;
+
+        CheckFusion();
     }
 
-    private void OnSwitchAvatar(Avatar avatar)
+    private static void CheckFusion()
     {
-        if (avatar != Player.RigManager.avatar)
+        if (FindMelon("LabFusion", "Lakatrazz") != null)
         {
-            return;
+            EmbeddedResource.LoadAssemblyFromAssembly(HolsterHiderAssembly, "HolsterHider.resources.HolsterHiderModule.dll")
+                .GetType("HolsterHiderModule.ModuleLoader")
+                .GetMethod("LoadModule")
+                .Invoke(null, null);
         }
-
-        UpdateHolsters();
     }
 
-    public void SetupBoneMenu()
+    public static void SetupBoneMenu()
     {
         MainPage = Page.Root.CreatePage("Holster Hider", new Color(1f, 0.75f, 0.79f));
 
-        var scalePreference = _bodyPreferences.ScalePreference;
-        var scaleElement = MainPage.CreateBool("Resize Holsters", Color.cyan, scalePreference.preference.Value, scalePreference.OnBoneMenuChange);
-        _bodyPreferences.ScalePreference.element = scaleElement;
+        var scalePreference = BodyPreferences.ScalePreference;
+        var scaleElement = MainPage.CreateBool("Resize Holsters", Color.cyan, scalePreference.Preference.Value, scalePreference.OnBoneMenuChange);
+        BodyPreferences.ScalePreference.Element = scaleElement;
 
-        foreach (var holster in _bodyPreferences.HolsterPreferences)
+        foreach (var holster in BodyPreferences.HolsterPreferences)
         {
             holster.element = MainPage.CreateEnum(holster.identifier, Color.green, holster.preference.Value, holster.OnBoneMenuChange);
         }
@@ -75,19 +87,26 @@ public class HolsterHiderMod : MelonMod
         UpdateHolsters();
     }
 
-    private void UpdatePreferences()
+    private static void UpdatePreferences()
     {
-        _bodyPreferences.UpdatePreferences();
+        BodyPreferences.UpdatePreferences();
     }
 
     public static void UpdateHolsters()
     {
-        _bodyReferences.ApplyConfig(_bodyConfig);
+        if (LocalRig == null)
+        {
+            return;
+        }
+
+        LocalRig.ApplyConfig();
+
+        OnHolstersChanged?.InvokeActionSafe();
     }
 
-    private void ResetHolsters()
+    private static void ResetHolsters()
     {
-        _bodyPreferences.ResetPreferences();
+        BodyPreferences.ResetPreferences();
         UpdateHolsters();
     }
 
@@ -95,7 +114,8 @@ public class HolsterHiderMod : MelonMod
     {
         var rigManager = Player.RigManager;
 
-        _bodyReferences.CacheReferences(rigManager);
+        LocalRig = rigManager.gameObject.AddComponent<HolsterHiderRig>();
+        LocalRig.Config = LocalBodyConfig;
 
         UpdateHolsters();
     }

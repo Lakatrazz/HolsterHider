@@ -2,7 +2,10 @@
 
 namespace HolsterHider;
 
-public class BodyPreference
+/// <summary>
+/// Holds all of the saved preferences for hiding holsters.
+/// </summary>
+public class BodyPreferences
 {
     public HolsterPreference[] _holsterPreferences = null;
 

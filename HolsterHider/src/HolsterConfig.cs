@@ -9,5 +9,5 @@ public enum HolsterVisibility
 
 public class HolsterConfig
 {
-    public HolsterVisibility visibility;
+    public HolsterVisibility Visibility;
 }

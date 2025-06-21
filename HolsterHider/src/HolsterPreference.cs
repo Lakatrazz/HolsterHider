@@ -47,7 +47,7 @@ public class HolsterPreference
 
         if (config != null)
         {
-            config.visibility = visibility;
+            config.Visibility = visibility;
         }
     }
 }

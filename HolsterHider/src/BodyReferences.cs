@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace HolsterHider;
 
-public class BodyReference
+public class BodyReferences
 {
     private readonly HolsterReference[] _holsterReferences = null;
 
@@ -22,7 +22,7 @@ public class BodyReference
 
     private RigManager _rigManager = null;
 
-    public BodyReference()
+    public BodyReferences()
     {
         _holsterReferences = new HolsterReference[] {
             new(),
@@ -36,7 +36,7 @@ public class BodyReference
         };
     }
 
-    public void ApplyConfig(BodyConfig config)
+    public void ApplyConfig(BodyConfig bodyConfig)
     {
         if (_rigManager == null)
         {
@@ -45,7 +45,7 @@ public class BodyReference
 
         float scale = 1f;
 
-        if (config.ScaleHolsters)
+        if (bodyConfig.ScaleHolsters)
         {
             scale = _rigManager.avatar.height / 1.76f;
         }
@@ -64,7 +64,7 @@ public class BodyReference
                 reference.ScaleObject(scale);
             }
 
-            reference.SetVisibility(config.HolsterConfigs[i].visibility);
+            reference.SetVisibility(bodyConfig.HolsterConfigs[i].Visibility);
         }
     }
 
