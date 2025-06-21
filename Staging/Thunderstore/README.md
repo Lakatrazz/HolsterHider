@@ -8,5 +8,8 @@ Ever wanted to hide your body log for videos, or disable your holsters as a smal
 - Toggle holster resizing with avatar height
      - Small avatars are actually playable now!
 
+## WORKS IN FUSION
+When you and your friends install Holster Hider, the holster size and hiding will be synced!
+
 ## DEPENDENCIES
 - BoneLib: https://bonelab.thunderstore.io/package/gnonme/BoneLib/
