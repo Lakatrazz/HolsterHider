@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 using UnityEngine;
 
 namespace HolsterHider;
@@ -82,20 +83,21 @@ public class HolsterReference
                 _root.gameObject.SetActive(true);
 
                 foreach (var renderer in _renderers)
+                {
                     renderer.enabled = false;
-
+                }
                 break;
             case HolsterVisibility.DISABLED:
                 _root.gameObject.SetActive(false);
-
                 break;
-
             default:
             case HolsterVisibility.DEFAULT:
                 _root.gameObject.SetActive(true);
 
                 foreach (var renderer in _renderers)
+                {
                     renderer.enabled = true;
+                }
                 break;
         }
     }
