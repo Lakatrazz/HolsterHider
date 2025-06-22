@@ -9,4 +9,3 @@ using System.Reflection;
 
 [assembly: MelonInfo(typeof(HolsterHiderMod), "Holster Hider", HolsterHiderMod.Version, "Lakatrazz")]
 [assembly: MelonGame("Stress Level Zero", "BONELAB")]
-[assembly: MelonOptionalDependencies("LabFusion")]

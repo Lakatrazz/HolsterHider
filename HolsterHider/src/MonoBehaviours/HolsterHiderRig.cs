@@ -60,7 +60,8 @@ public class HolsterHiderRig : MonoBehaviour
     {
         _onAvatarSwappedDelegate = (Action)OnAvatarSwapped;
 
-        RigManager.onAvatarSwapped += _onAvatarSwappedDelegate;
+        // Inject holster updating before any other avatar delegates
+        RigManager.onAvatarSwapped = Il2CppSystem.Delegate.Combine(_onAvatarSwappedDelegate, RigManager.onAvatarSwapped).Cast<Il2CppSystem.Action>();
     }
 
     private void UnhookRig()
