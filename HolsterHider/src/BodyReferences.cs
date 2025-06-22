@@ -54,16 +54,7 @@ public class BodyReferences
         {
             var reference = HolsterReferences[i];
 
-            if (reference != AmmoPouchGroup && reference != BodyLogGroup)
-            {
-                reference.ScaleMeshes(scale);
-                reference.ScaleColliders(scale);
-            }
-            else
-            {
-                reference.ScaleObject(scale);
-            }
-
+            reference.SetScale(scale);
             reference.SetVisibility(bodyConfig.HolsterConfigs[i].Visibility);
         }
     }
@@ -74,27 +65,41 @@ public class BodyReferences
         var bodySlots = rigManager.inventory.bodySlots;
 
         CacheHolster(rigManager.physicsRig.m_head.GetComponentInChildren<InventorySlotReceiver>(true), HeadGroup);
-        CacheHolster(bodySlots[3].inventorySlotReceiver, RightShoulderGroup);
-        CacheHolster(bodySlots[2].inventorySlotReceiver, LeftShoulderGroup);
+        CacheHolster(bodySlots[3], RightShoulderGroup);
+        CacheHolster(bodySlots[2], LeftShoulderGroup);
 
-        CacheHolster(bodySlots[5].inventorySlotReceiver, RightUnderarmGroup);
-        CacheHolster(bodySlots[0].inventorySlotReceiver, LeftUnderarmGroup);
+        CacheHolster(bodySlots[5], RightUnderarmGroup);
+        CacheHolster(bodySlots[0], LeftUnderarmGroup);
 
-        CacheHolster(bodySlots[4].inventorySlotReceiver, BackGroup);
+        CacheHolster(bodySlots[4], BackGroup);
 
-        CacheHolster(rigManager.GetComponentInChildren<InventoryAmmoReceiver>(true), AmmoPouchGroup);
+        CacheAmmoPouch(rigManager.GetComponentInChildren<InventoryAmmoReceiver>(true), AmmoPouchGroup);
         CachePullCord(rigManager.inventory.specialItems[0].GetComponentInChildren<PullCordDevice>(true), BodyLogGroup);
     }
 
-    private static void CacheHolster(InventoryHandReceiver receiver, HolsterReference holster)
+    private static void CacheHolster(SlotContainer slotContainer, HolsterReference holster)
     {
-        Transform root = receiver.transform.parent;
-        holster.CacheReferences(root, root.GetComponentsInChildren<MeshRenderer>(true), root.GetComponentsInChildren<Collider>(true));
+        var root = slotContainer.transform;
+        var slotReceiver = slotContainer.inventorySlotReceiver;
+
+        holster.CacheReferences(root, root.GetComponentsInChildren<MeshRenderer>(true), slotReceiver);
+    }
+
+    private static void CacheHolster(InventorySlotReceiver slotReceiver, HolsterReference holster)
+    {
+        Transform root = slotReceiver.transform.parent;
+        holster.CacheReferences(root, root.GetComponentsInChildren<MeshRenderer>(true), slotReceiver);
+    }
+
+    private static void CacheAmmoPouch(InventoryAmmoReceiver ammoReceiver, HolsterReference holster)
+    {
+        Transform root = ammoReceiver.transform.parent;
+        holster.CacheReferences(root, root.GetComponentsInChildren<MeshRenderer>(true));
     }
 
     private static void CachePullCord(PullCordDevice pullCord, HolsterReference holster)
     {
         var root = pullCord.transform;
-        holster.CacheReferences(root, root.Find("BodyLog").GetComponentsInChildren<MeshRenderer>(true), root.GetComponentsInChildren<Collider>(true));
+        holster.CacheReferences(root, root.Find("BodyLog").GetComponentsInChildren<MeshRenderer>(true));
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Il2CppSLZ.Marrow;
 
 using UnityEngine;
 
@@ -7,72 +7,63 @@ namespace HolsterHider;
 public class HolsterReference
 {
     private Transform _root;
-    private Vector3 _rootLocalPosition;
     private Vector3 _rootLocalScale;
 
     private MeshRenderer[] _renderers;
-    private Collider[] _colliders;
 
-    private Vector3[] _rendererScales;
-    private ColliderScaleHolder[] _colliderScales;
+    private InventorySlotReceiver _slotReceiver = null;
+    private bool _hasSlotReceiver = false;
 
-    public void CacheReferences(Transform root, MeshRenderer[] renderers, Collider[] colliders)
+    public void CacheReferences(Transform root, MeshRenderer[] renderers, InventorySlotReceiver slotReceiver)
+    {
+        _hasSlotReceiver = true;
+        _slotReceiver = slotReceiver;
+
+        CacheReferences(root, renderers);
+    }
+
+    public void CacheReferences(Transform root, MeshRenderer[] renderers)
     {
         _root = root;
-        _rootLocalPosition = root.localPosition;
         _rootLocalScale = root.localScale;
 
-        foreach (var renderer in renderers)
-        {
-            List<Transform> children = new();
-            foreach (var child in renderer.transform)
-            {
-                children.Add(child.TryCast<Transform>());
-            }
-
-            foreach (var child in children)
-            {
-                child.transform.parent = renderer.transform.parent;
-            }
-        }
-
         _renderers = renderers;
-        _colliders = colliders;
+    }
 
-        _rendererScales = new Vector3[renderers.Length];
-        for (var i = 0; i < _rendererScales.Length; i++)
+    public void SetScale(float scale)
+    {
+        if (_hasSlotReceiver && HasWeapon())
         {
-            _rendererScales[i] = renderers[i].transform.localScale;
+            ScaleWithoutItem(scale);
         }
-
-        _colliderScales = new ColliderScaleHolder[colliders.Length];
-        for (var i = 0; i < _colliderScales.Length; i++)
+        else
         {
-            _colliderScales[i] = new ColliderScaleHolder(_colliders[i]);
+            ScaleRoot(scale);
         }
     }
 
-    public void ScaleObject(float scale)
+    private bool HasWeapon()
+    {
+        var slottedWeapon = _slotReceiver._slottedWeapon;
+
+        return slottedWeapon != null && slottedWeapon.interactableHost != null && slottedWeapon.interactableHost.marrowEntity != null;
+    }
+
+    private void ScaleWithoutItem(float scale)
+    {
+        var marrowEntity = _slotReceiver._slottedWeapon.interactableHost.marrowEntity.transform;
+
+        var parent = marrowEntity.parent;
+        marrowEntity.parent = null;
+
+        ScaleRoot(scale);
+
+        marrowEntity.parent = parent;
+    }
+
+    private void ScaleRoot(float scale)
     {
         _root.localScale = _rootLocalScale * scale;
-    }
-
-    public void ScaleMeshes(float scale)
-    {
-        _root.localPosition = _rootLocalPosition * scale;
-
-        for (var i = 0; i < _renderers.Length; i++)
-        {
-            _renderers[i].transform.localScale = _rendererScales[i] * scale;
-        }
-    }
-
-    public void ScaleColliders(float scale)
-    {
-        for (var i = 0; i < _colliders.Length; i++)
-        {
-            _colliderScales[i].SetScale(_colliders[i], scale);
-        }
     }
 
     public void SetVisibility(HolsterVisibility visibility)

@@ -1,5 +1,6 @@
 **v1.2.0**
 - Added Fusion sync
+- Improved holster resizing
 
 **v1.1.0**
 - Updated to Patch 6
