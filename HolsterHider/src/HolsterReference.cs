@@ -54,11 +54,14 @@ public class HolsterReference
         var marrowEntity = _slotReceiver._slottedWeapon.interactableHost.marrowEntity.transform;
 
         var parent = marrowEntity.parent;
+        var localPosition = marrowEntity.localPosition;
+
         marrowEntity.parent = null;
 
         ScaleRoot(scale);
 
         marrowEntity.parent = parent;
+        marrowEntity.localPosition = localPosition;
     }
 
     private void ScaleRoot(float scale)
