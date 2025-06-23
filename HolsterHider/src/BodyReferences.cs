@@ -94,7 +94,7 @@ public class BodyReferences
     private static void CacheAmmoPouch(InventoryAmmoReceiver ammoReceiver, HolsterReference holster)
     {
         Transform root = ammoReceiver.transform.parent;
-        holster.CacheReferences(root, root.GetComponentsInChildren<MeshRenderer>(true));
+        holster.CacheReferences(root, root.GetComponentsInChildren<MeshRenderer>(true), ammoReceiver);
     }
 
     private static void CachePullCord(PullCordDevice pullCord, HolsterReference holster)

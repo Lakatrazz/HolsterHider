@@ -14,10 +14,21 @@ public class HolsterReference
     private InventorySlotReceiver _slotReceiver = null;
     private bool _hasSlotReceiver = false;
 
+    private InventoryAmmoReceiver _ammoReceiver = null;
+    private bool _hasAmmoReceiver = false;
+
     public void CacheReferences(Transform root, MeshRenderer[] renderers, InventorySlotReceiver slotReceiver)
     {
         _hasSlotReceiver = true;
         _slotReceiver = slotReceiver;
+
+        CacheReferences(root, renderers);
+    }
+
+    public void CacheReferences(Transform root, MeshRenderer[] renderers, InventoryAmmoReceiver ammoReceiver)
+    {
+        _hasAmmoReceiver = true;
+        _ammoReceiver = ammoReceiver;
 
         CacheReferences(root, renderers);
     }
@@ -40,6 +51,8 @@ public class HolsterReference
         {
             ScaleRoot(scale);
         }
+
+        ScaleMags();
     }
 
     private bool HasWeapon()
@@ -67,6 +80,38 @@ public class HolsterReference
     private void ScaleRoot(float scale)
     {
         _root.localScale = _rootLocalScale * scale;
+    }
+
+    private void ScaleMags()
+    {
+        if (!_hasAmmoReceiver)
+        {
+            return;
+        }
+
+        foreach (var magazine in _ammoReceiver._magazineArts)
+        {
+            if (magazine == null)
+            {
+                continue;
+            }
+
+            var host = magazine.interactableHost;
+
+            if (host == null)
+            {
+                continue;
+            }
+
+            var entity = host.marrowEntity;
+
+            if (entity == null)
+            {
+                continue;
+            }
+
+            entity.transform.localScale = entity._originalScale;
+        }
     }
 
     public void SetVisibility(HolsterVisibility visibility)
