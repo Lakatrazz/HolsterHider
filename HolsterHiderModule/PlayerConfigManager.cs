@@ -113,6 +113,8 @@ public static class PlayerConfigManager
 
         var newRig = player.RigRefs.RigManager.gameObject.AddComponent<HolsterHiderRig>();
 
+        PlayerIDToRig[smallID] = newRig;
+
         return newRig;
     }
 }
