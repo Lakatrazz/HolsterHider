@@ -31,8 +31,14 @@ public class HolsterHiderModule : Module
 
         PlayerConfigManager.OnInitialize();
 
+        MultiplayerHooking.OnJoinedServer += OnJoinedServer;
         MultiplayerHooking.OnPlayerJoined += OnPlayerJoined;
         HolsterHiderMod.OnHolstersChanged += OnHolstersChanged;
+    }
+
+    private void OnJoinedServer()
+    {
+        OnHolstersChanged();
     }
 
     private void OnPlayerJoined(PlayerID playerID)

@@ -20,8 +20,15 @@ public static class PlayerConfigManager
     public static void OnInitialize()
     {
         MultiplayerHooking.OnPlayerLeft += OnPlayerLeft;
+        MultiplayerHooking.OnDisconnected += OnDisconnected;
 
         NetworkPlayer.OnNetworkRigCreated += OnNetworkRigCreated;
+    }
+
+    private static void OnDisconnected()
+    {
+        PlayerIDToConfig.Clear();
+        PlayerIDToRig.Clear();
     }
 
     private static void OnPlayerLeft(PlayerID playerID)
